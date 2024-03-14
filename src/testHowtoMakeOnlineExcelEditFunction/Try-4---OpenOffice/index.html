@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Online Preview and Edit</title>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <input type="file" id="fileInput">
+    <div id="excelPreview"></div>
+
+    <iframe id="iframetest" src='https://view.officeapps.live.com/op/view.aspx?src=' +fileurl width='100%' height='100%'
+        frameborder='1'></iframe>
+
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            console.log(file);
+            let iframetest = document.getElementById('iframetest');
+            iframetest.src = 'https://view.officeapps.live.com/op/view.aspx?src=' +file;
+            iframetest.load();
+
+            // var reader = new FileReader();
+            // reader.readAsArrayBuffer(file);
+            // reader.onload = function (e) {
+            //     var data = new Uint8Array(e.target.result);
+            //     var workbook = XLSX.read(data, { type: 'array' });
+            //     var sheetName = workbook.SheetNames[0];
+            //     var sheet = workbook.Sheets[sheetName];
+            //     var html = XLSX.utils.sheet_to_html(sheet);
+            //     document.getElementById('excelPreview').innerHTML = html;
+            // };
+
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Excel Editor with SheetJS and Handsontable</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <div id="hot"></div>
+    <button id="exportBtn">Export Excel</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+        var hot;
+        
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var sheetName = workbook.SheetNames[0];
+                var sheet = workbook.Sheets[sheetName];
+                var sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                
+                if (hot) {
+                    hot.destroy();
+                }
+
+                hot = new Handsontable(document.getElementById('hot'), {
+                    licenseKey: 'non-commercial-and-evaluation',
+                    data: sheetData,
+                    rowHeaders: true,
+                    colHeaders: true,
+                    contextMenu: true,
+                    manualRowResize: true,
+                    manualColumnResize: true,
+                    filters: true,
+                    dropdownMenu: true
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            if (hot) {
+                var exportData = hot.getData();
+                var wb = XLSX.utils.book_new();
+                var ws = XLSX.utils.aoa_to_sheet(exportData);
+                XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+                XLSX.writeFile(wb, "edited_excel.xlsx");
+            }
+        });
+    </script>
+</body>
+</html>

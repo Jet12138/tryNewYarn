@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel Online Preview, Edit, Import, Export</title>
+<!-- <script src="https://openofficejs.readthedocs.io/en/latest/oojs/dist/oojs.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/oojs@7.0.1/dist/oojs.min.js"></script>
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+
+<input type="file" id="fileInput">
+<div id="excelPreview"></div>
+<button id="exportBtn">Export to Excel</button>
+
+<script>
+  // 初始化 OpenOffice.js
+  var oojs = new OOJS();
+
+  document.getElementById('fileInput').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    
+    // 预览 Excel 文件
+    oojs.previewFile(file).then(function(html) {
+      document.getElementById('excelPreview').innerHTML = html;
+    });
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', function() {
+    // 导出数据到 Excel
+    var data = [
+      ['Name', 'Age'],
+      ['Alice', 30],
+      ['Bob', 25],
+      ['Charlie', 35]
+    ];
+
+    oojs.exportDataToExcel(data, 'exported_data.xlsx');
+  });
+</script>
+
+</body>
+</html>

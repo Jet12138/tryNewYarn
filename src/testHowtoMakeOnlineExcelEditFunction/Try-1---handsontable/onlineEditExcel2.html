@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Excel Editor with SheetJS and Handsontable</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+</head>
+<body>
+    <div id="hot"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+        var data = [
+            ["Name", "Age", "Country"],
+            ["Alice", 25, "USA"],
+            ["Bob", 30, "Canada"],
+            ["Charlie", 28, "UK"]
+        ];
+
+        var container = document.getElementById('hot');
+        var hot = new Handsontable(container, {
+            licenseKey: 'non-commercial-and-evaluation',
+            data: data,
+            rowHeaders: true,
+            colHeaders: true,
+            contextMenu: true,
+            manualRowResize: true,
+            manualColumnResize: true,
+            filters: true,
+            dropdownMenu: true,
+            afterChange: function (changes, source) {
+                if (source === 'edit') {
+                    var exportData = hot.getData();
+                    var wb = XLSX.utils.book_new();
+                    var ws = XLSX.utils.aoa_to_sheet(exportData);
+                    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+                    XLSX.writeFile(wb, "edited_excel.xlsx");
+                }
+            }
+        });
+    </script>
+</body>
+</html>

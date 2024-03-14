@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel编辑器示例</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script> -->
+</head>
+<body>
+
+    <h1>失败了：不能带样式预览。而且我的示例excel文件大小为6MB，文件打不开，死机了。</h1>
+
+    // 第一个excel 在线导入、编辑、导出的例子
+    <input type="file" id="input-excel" />
+    <table id="excel-data" border="1"></table>
+    <button id="export-excel">导出Excel</button>
+
+    <hr>
+
+    // 第二个excel 在线导入、编辑、导出的例子
+    <input type="file" id="upload" accept=".xlsx, .xls" />
+    <table id="excel-preview" border="1"></table>
+    <button id="export">导出</button>
+<script>
+    //  导入 Excel
+    document.getElementById('input-excel').addEventListener('change', function(e) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, {
+                type: 'binary',
+                cellStyles: true,
+            });
+            var firstSheetName = workbook.SheetNames[0];
+            var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheetName]);
+            // 将数据显示为表格
+            var table = document.getElementById('excel-data');
+            excelRows.forEach(function(row, rowIndex) {
+                var tr = document.createElement('tr');
+                Object.keys(row).forEach(function(cell, cellIndex) {
+                    var td = document.createElement('td');
+                    var input = document.createElement('input');
+                    input.value = row[cell];
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+        };
+        reader.readAsBinaryString(e.target.files[0]);
+    });
+
+    // Excel 导出
+    document.getElementById('export-excel').addEventListener('click', function() {
+        var workbook = XLSX.utils.book_new();
+        var table = document.getElementById('excel-data');
+        var rows = [];
+        for (var i = 0; i < table.rows.length; i++) {
+            var row = [];
+            for (var j = 0; j < table.rows[i].cells.length; j++) {
+                var cellInput = table.rows[i].cells[j].firstChild;
+                row.push(cellInput.value);
+            }
+            rows.push(row);
+        }
+        var worksheet = XLSX.utils.aoa_to_sheet(rows);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        XLSX.writeFile(workbook, "exported_file.xlsx");
+    });
+
+
+
+
+    // 第二个excel 在线导入、编辑、导出的例子
+    // 步骤1：用户上传Excel文件后，使用SheetJS读取文件内容。以下是如何实现文件上传并读取Excel文件的内容：
+    // document.getElementById('upload').addEventListener('change', function(event){
+    //     var file = event.target.files[0];
+    //     var reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         var data = e.target.result;
+    //         var workbook = XLSX.read(data, {
+    //             type: 'binary',
+    //             cellStyles: true,
+    //         });
+    //         var firstSheetName = workbook.SheetNames[0];
+    //         var worksheet = workbook.Sheets[firstSheetName];
+    //         displayData(worksheet);
+    //     };
+    //     reader.readAsBinaryString(file);
+    // });
+
+    document.getElementById('upload').addEventListener('change', function(event){
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, {
+            type: 'binary',
+            cellStyles: true
+            });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+            var htmlString = XLSX.utils.sheet_to_html(worksheet, {editable: true});
+            document.getElementById('excel-preview').innerHTML = htmlString;
+        };
+        reader.readAsBinaryString(event.target.files[0]);
+    });
+
+    // 步骤2：displayData函数用于将Excel文件的内容转换为HTML表格，以便用户可以编辑。
+    function displayData(worksheet) {
+        var data = XLSX.utils.sheet_to_json(worksheet, {header:1});
+        var table = document.createElement('table');
+        data.forEach(function(row) {
+            var tr = document.createElement('tr');
+            row.forEach(function(cell) {
+                var td = document.createElement('td');
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.value = cell;
+                td.appendChild(input);
+                tr.appendChild(td);
+            });
+            table.appendChild(tr);
+        });
+        document.body.appendChild(table);
+    }
+
+    document.getElementById('export').addEventListener('click', function(){
+        var table = document.querySelector('table');
+        var data = [];
+        for(var i = 0; i < table.rows.length; i++){
+            var row = [];
+            for(var j = 0; j < table.rows[i].cells.length; j++){
+                var input = table.rows[i].cells[j].querySelector('input');
+                row.push(input.value);
+            }
+            data.push(row);
+        }
+        var worksheet = XLSX.utils.aoa_to_sheet(data);
+        var workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        XLSX.writeFile(workbook, "exported.xlsx");
+    });
+    
+    
+    document.getElementById('export').addEventListener('click', function () {
+        var table = document.querySelector('table');
+        var data = [];
+        for (var i = 0; i < table.rows.length; i++) {
+            var row = [];
+            for (var j = 0; j < table.rows[i].cells.length; j++) {
+                var input = table.rows[i].cells[j].querySelector('input');
+                row.push(input.value);
+            }
+            data.push(row);
+        }
+        var worksheet = XLSX.utils.aoa_to_sheet(data);
+        var workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        XLSX.writeFile(workbook, "exported.xlsx");
+    });
+    
+
+    
+
+</script>
+
+</body>
+</html>
