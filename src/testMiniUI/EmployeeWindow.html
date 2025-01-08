@@ -1,0 +1,201 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>员工面板</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <script src="../../scripts/boot.js" type="text/javascript"></script>
+
+
+    <style type="text/css">
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            border: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form id="form1" method="post">
+        <mini-hidden name="id"></mini-hidden>
+        <div style="padding-left:11px;padding-bottom:5px;">
+            <table style="table-layout:fixed;">
+                <tr>
+                    <td style="width:70px;">员工帐号：</td>
+                    <td style="width:150px;">
+                        <mini-textbox name="loginname" required="true" emptyText="请输入帐号"></mini-textbox>
+                    </td>
+                    <td style="width:70px;">所属部门：</td>
+                    <td style="width:150px;">
+                        <mini-combobox name="dept_id" valueField="id" textField="name"
+                            url="../data/AjaxService.aspx?method=GetDepartments" onvaluechanged="onDeptChanged"
+                            required="true" emptyText="请选择部门"></mini-combobox>
+                    </td>
+                </tr>
+                <tr>
+                    <td>薪资待遇：</td>
+                    <td>
+                        <mini-textbox name="salary" required="true"></mini-textbox>
+                    </td>
+                    <td>职位：</td>
+                    <td>
+                        <mini-combobox name="position" valueField="id" textField="name"></mini-combobox>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>学历：</td>
+                    <td>
+                        <mini-combobox name="educational" valueField="id" textField="name"
+                            url="../data/AjaxService.aspx?method=GetEducationals"></mini-combobox>
+                    </td>
+                    <td>毕业院校：</td>
+                    <td>
+                        <mini-textbox name="school"></mini-textbox>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <fieldset style="border:solid 1px #aaa;padding:3px;">
+            <legend>基本信息</legend>
+            <div style="padding:5px;">
+                <table>
+                    <tr>
+                        <td style="width:70px;">姓名</td>
+                        <td style="width:150px;">
+                            <mini-textbox name="name" required="true"></mini-textbox>
+                        </td>
+                        <td style="width:70px;">性别：</td>
+                        <td>
+                            <select name="gender" class="mini-radiobuttonlist">
+                                <option value="1">男</option>
+                                <option value="2">女</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>年龄：</td>
+                        <td>
+                            <mini-spinner name="age" value="25" minValue="1" maxValue="200"></mini-spinner>
+                        </td>
+                        <td>出生日期：</td>
+                        <td>
+                            <mini-datepicker name="birthday" required="true" showWeekNumber="true"
+                                emptyText="请选择日期"></mini-datepicker>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <mini-checkbox name="married" text="已婚？" trueValue="1" falseValue="0"></mini-checkbox>
+                        </td>
+                        <td></td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>国家：</td>
+                        <td>
+                            <mini-combobox name="country" url="../data/countrys.txt"></mini-combobox>
+                        </td>
+                        <td>城市：</td>
+                        <td>
+                            <mini-combobox name="city"></mini-combobox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td>
+                        <td colspan="3">
+                            <mini-textarea name="remarks" style="width:378px;"></mini-textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <div style="text-align:center;padding:10px;">
+            <mini-button onclick="onOk" style="width:60px;margin-right:20px;">确定</mini-button>
+            <mini-button onclick="onCancel" style="width:60px;">取消</mini-button>
+        </div>
+    </form>
+    <script type="text/javascript">
+        mini.parse();
+
+        var form = new mini.Form("form1");
+
+        function SaveData() {
+            saveForm(form, {
+                url: "../data/AjaxService.aspx?method=SaveEmployees",
+                callback: function (success) {
+                    if (success) CloseWindow("save");
+                    else CloseWindow();
+                }
+            });
+        }
+
+        ////////////////////
+        //标准方法接口定义
+        function SetData(data) {
+            if (data.action == "edit") {
+                //跨页面传递的数据对象，克隆后才可以安全使用
+                data = mini.clone(data);
+
+                $.ajax({
+                    url: "../data/AjaxService.aspx?method=GetEmployee&id=" + data.id,
+                    cache: false,
+                    success: function (text) {
+                        var o = mini.decode(text);
+                        form.setData(o);
+                        form.setChanged(false);
+
+                        onDeptChanged();
+                        mini.getbyName("position").setValue(o.position);
+                    }
+                });
+            }
+        }
+
+        function GetData() {
+            var o = form.getData();
+            return o;
+        }
+        function CloseWindow(action) {
+            if (action == "close" && form.isChanged()) {
+                if (confirm("数据被修改了，是否先保存？")) {
+                    return false;
+                }
+            }
+            if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+            else window.close();
+        }
+        function onOk(e) {
+            SaveData();
+        }
+        function onCancel(e) {
+            CloseWindow("cancel");
+        }
+        //////////////////////////////////
+        function onDeptChanged(e) {
+            var deptCombo = mini.getbyName("dept_id");
+            var positionCombo = mini.getbyName("position");
+            var dept_id = deptCombo.getValue();
+
+            positionCombo.load("../data/AjaxService.aspx?method=GetPositionsByDepartmenId&id=" + dept_id);
+            positionCombo.setValue("");
+        }
+
+
+
+    </script>
+</body>
+
+</html>

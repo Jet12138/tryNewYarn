@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-Hans-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            width: 700px;
+            height: 200px;
+            overflow: hidden;
+
+            background-color: #396;
+            font-size: 20px;
+            color: blue;
+        }
+
+        .center {
+            float: left;
+            width: 100%;
+            min-height: 100px;
+
+            padding-left: 100px;
+            padding-right: 200px;
+            background-color: rgb(125, 49, 49);
+        }
+
+        .floatleft {
+            float: left;
+            width: 100px;
+            min-height: 100px;
+
+            margin-left: -100%;
+            margin-top: 10px;
+            background-color: #09f;
+        }
+
+        .floatright {
+            float: right;
+            width: 200px;
+            min-height: 100px;
+
+            margin-right: -200px;
+            margin-top: 10px;
+            background-color: #195f38;
+
+        }
+    </style>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/jquery.jqprint-0.3.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="floatleft">a</div>
+        <div class="floatright">b</div>
+        <div class="center">center</div>
+    </div>
+    <button onclick="doprint()">
+        打印按钮
+    </button>
+    <noscript>请开启JavaScript功能，不然网页功能无法进行。</noscript>
+
+
+    <table id="dataPrint" class="nui-form-table flowTab yjtab">
+        <thead>
+            <tr>
+                <td><h1>这是测试表</h1></td>
+            </tr>
+            
+        </thead>
+       
+        <tr style="page-break-after:always"></tr>
+
+        <tbody>
+            <tr>
+                <td>
+                    <div>我是tbody</div>
+                </td>
+            </tr>
+            <!-- 下面一行就属于是tbody里面嵌套了tbody, 证明是可以这样写的。只要tbody里面嵌套tr， tr里面嵌套td，按照此规则来写就可以。 -->
+            <tbody>
+                <tr>
+                    <td>
+                        <div>Me too. 我也是tbody 1</div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <td>
+                        <div>Me too. 我也是tbody 2</div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <td>
+                        <div>Me too. 我也是tbody 3</div>
+                    </td>
+                </tr>
+            </tbody>
+        </tbody>
+
+        <tbody>
+            <tr>
+                <td>
+                    <div>Last Me too. 我是 Last tbody</div>
+                </td>
+            </tr>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td>这是表格的底部</td>
+            </tr>
+        </tfoot>
+
+        
+    </table>
+
+
+    <script>
+
+        function doprint() {
+            $("#dataPrint").jqprint({
+                debug: false,
+                importCSS: true,
+                printContainer: true,
+                operaSupport: false
+            });
+        }
+    </script>
+</body>
+
+</html>

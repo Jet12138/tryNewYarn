@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hans-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test Print When all elements use a "break-inside: avoid" attribute. </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            width: 700px;
+            height: 230px;
+            background-color: #396;
+            font-size: 20px;
+            color: blue;
+
+            break-inside: avoid;
+            border: 1px solid #666;
+        }
+
+        .box2 {
+            width: 700px;
+            height: 250px;
+            background-color: #09f;
+            font-size: 20px;
+            color: #999;
+
+            break-inside: avoid;
+            border: 1px solid #666;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>请开启JavaScript功能，不然网页功能无法进行。</noscript>
+
+    <button onclick="toPrint();">打印</button>
+    <table class="nui-form-table flowTab yjtab">
+        <tbody>
+            <tr>
+                <td class="tdLb titletd2" > 
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box">box1</div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td class="tdLb titletd2" >
+                    <div class="box2">box2</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function toPrint(){
+            window.print();
+        }
+    </script>
+</body>
+</html>

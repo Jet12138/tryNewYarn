@@ -1,4 +1,11 @@
 {
-  "name": "tryNewYarn",
-  "packageManager": "yarn@4.0.2"
+  "name": "tryNewYarn0.0.1",
+  "packageManager": "yarn@4.0.2",
+  "dependencies": {
+    "koa": "^2.15.0",
+    "koa-route": "^4.0.1",
+    "koa-static": "^5.0.0",
+    "koa2-cors": "^2.0.6",
+    "moment": "^2.30.1"
+  }
 }
